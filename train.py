@@ -9,7 +9,7 @@ import mlflow.sklearn
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 mlflow.set_experiment("Tracking")
 # Load dataset
-data = pd.read_csv('hour.csv')
+data = pd.read_csv('./data/hour.csv')
 
 # Select only numerical columns (excluding the target 'cnt')
 numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns

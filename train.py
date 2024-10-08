@@ -3,11 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error,r2_score
-import mlflow
-import mlflow.sklearn
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
-mlflow.set_experiment("Tracking")
+
 # Load dataset
 data = pd.read_csv('./data/hour.csv')
 
@@ -29,17 +26,6 @@ lr_mse = mean_squared_error(y_test, lr_predictions)
 lr_r2 = r2_score(y_test, lr_predictions)
 print(f'Linear Regression MSE: {lr_mse}, R²: {lr_r2}')
 
-def lr_mlflow():
-    with mlflow.start_run(run_name="Linear Regression"):
-
-        # Log model, parameters, and metrics
-        mlflow.log_param("Model Type", "Linear Regression")
-        mlflow.log_metric("MSE", lr_mse)
-        mlflow.log_metric("R²", lr_r2)
-        
-        mlflow.sklearn.log_model(lr_model,"linear_regression_model")
-        print("linear regression model is logged in mlflow")
-lr_mlflow()
 
 # Train Random Forest Regressor Model
 rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -55,26 +41,5 @@ print(f'Random Forest MSE: {rf_mse}, R²: {rf_r2}')
 
 
 
-# Train and log Random Forest model
-def rf_mlflow():
-    with mlflow.start_run(run_name="Random Forest"):
-
-        # Log model, parameters, and metrics
-        mlflow.log_param("Model Type", "Random Forest")
-        mlflow.log_param("n_estimators", 100)
-        mlflow.log_metric("MSE", rf_mse)
-        mlflow.log_metric("R²", rf_r2)
-        
-        mlflow.sklearn.log_model(rf_model,"random_forest_model")
-
-rf_mlflow()
-
-print('Training complete. Models saved, and experiments logged with MLflow.')
 
 
-
-mlflow.set_experiment("Best Model")
-if rf_r2 > lr_r2 :
-    rf_mlflow()
-else:
-    lr_mlflow()
